@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         generateUserList();
     }
 
-
+//change 
     public void triggerLogin(View view) {
         Intent intent = new Intent(this, MainPage.class);
         if (dataMatches()) {
