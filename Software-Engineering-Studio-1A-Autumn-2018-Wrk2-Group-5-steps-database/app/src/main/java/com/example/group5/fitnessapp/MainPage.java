@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.content.Intent;
 import android.view.View;
+
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 
 import static java.lang.Math.sqrt;
@@ -23,10 +26,15 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
     public int steps = 0; //global variable keeps count of total steps taken
     private double calorie = 0;
 
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
+
+        mAuth = FirebaseAuth.getInstance();
+
         sensorText = (TextView)  findViewById(R.id.stepCount);
         calorieText = (TextView) findViewById(R.id.calorieBurnt);
         sensManager = (SensorManager)getSystemService(SENSOR_SERVICE); //Use getsystemservice to retrieve a sensorManager for accessing sensors
@@ -53,6 +61,13 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
         Intent i = new Intent(MainPage.this, CalorieCalculatorActivity.class);
         startActivity(i); //
 
+    }
+
+    public void onLogout(View view){
+        //Sign out user and launch the login page
+        mAuth.signOut();
+        finish();
+        startActivity(new Intent(this, LoginActivity.class));
     }
     @Override
     public void onSensorChanged(SensorEvent event) {

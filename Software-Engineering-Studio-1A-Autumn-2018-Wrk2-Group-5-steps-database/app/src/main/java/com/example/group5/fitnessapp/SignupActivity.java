@@ -2,14 +2,12 @@ package com.example.group5.fitnessapp;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.drm.ProcessedData;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -27,7 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 */
 
-public class SigninActivity extends AppCompatActivity {
+public class SignupActivity extends AppCompatActivity {
 
     //private DatabaseReference mDatabase;
     //private DatabaseReference mUsers;
@@ -43,18 +41,19 @@ public class SigninActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signin);
+        setContentView(R.layout.activity_signup);
 
         //initialise firebase object
         mAuth = FirebaseAuth.getInstance();
 
         progressDialog = new ProgressDialog(this);
         //If user is already logged in, navigate them to the mainpage (the profile page)
-        if(mAuth.getCurrentUser() != null) {
+        //Note don't put this in the sign up page
+        /*if(mAuth.getCurrentUser() != null) {
             //profile activity here
             finish();
-            startActivity(new Intent(getApplicationContext(), MainPage.class));
-        }
+        startActivity(new Intent(getApplicationContext(), MainPage.class));
+    } */
         //Initialise the views
         newEmail = (EditText) findViewById(R.id.newEmail);
         newPassword = (EditText)findViewById(R.id.newPassword);
@@ -97,7 +96,7 @@ public class SigninActivity extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), MainPage.class));
 
                 }else {
-                    Toast.makeText(SigninActivity.this, "Could not register.. please Try Again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignupActivity.this, "Could not register.. please Try Again", Toast.LENGTH_SHORT).show();
                 }
                 progressDialog.dismiss();
             }

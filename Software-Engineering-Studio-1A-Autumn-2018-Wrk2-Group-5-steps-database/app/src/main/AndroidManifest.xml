@@ -30,7 +30,7 @@
         <activity android:name=".Self" />
         <activity android:name=".ReportsActivity" />
         <activity android:name=".CalorieCalculatorActivity" />
-        <activity android:name=".SigninActivity" />
+        <activity android:name=".SignupActivity" />
     </application>
 
 </manifest>
