@@ -22,6 +22,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import static java.lang.Math.sqrt;
 
@@ -36,9 +39,12 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
     private String testResult;
     private int stepCount = 0;
     private double calorie = 0;
+    private int dayIndex;
 
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
+
+    Calendar calendar = Calendar.getInstance(Locale.FRANCE);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +71,13 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
             finish();
             startActivity(new Intent(this, LoginActivity.class));
         }
+
+        //TODO Potentially listener, under the current day's node e.g. sat=7 so listen for nodes there
+        //Date now = new Date();
+        //calendar.setTime(now);
+        //int dayIndex = Calendar.DAY_OF_WEEK;
+        //String day = Integer.toString(dayIndex);
+
         //Implement value listener which executes a method every time something changes in the database
         databaseReference.child(mAuth.getCurrentUser().getUid()).child("steps").addValueEventListener(new ValueEventListener() {
             @Override
@@ -81,7 +94,7 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
                     System.out.println("null");
                 } else if (Integer.parseInt(count) >= 0){
                     stepCount = Integer.parseInt(count);
-                    testResult = "not null";
+                    //testResult = "not null";
                 }
             }
             @Override
@@ -130,8 +143,48 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
         StepInformation stepInformation = new StepInformation(step);
         //Get current user
         FirebaseUser user = mAuth.getCurrentUser();
+
+        //Get day of week
+        Date now = new Date();
+        //calendar.setTime(now);
+        int dayIndex = calendar.get(Calendar.DAY_OF_WEEK);
+        //int dayIndex = 7;
+        String day = Integer.toString(dayIndex);
+
         //add this information under that user's name
+        //Also includes indices for each day
         databaseReference.child(user.getUid()).child("steps").setValue(stepInformation);
+        //TODO: Add a new child under steps representing each day
+        switch(dayIndex) {
+            //1 is sunday, but we want monday so set it to 7
+            case 1:
+                databaseReference.child(user.getUid()).child("steps").child(day).setValue(stepInformation);
+                break;
+            //2 is monday set to one
+            case 2:
+                databaseReference.child(user.getUid()).child("steps").child(day).setValue(stepInformation);
+                break;
+            //3 is tues
+            case 3:
+                databaseReference.child(user.getUid()).child("steps").child(day).setValue(stepInformation);
+                break;
+            //4 is wed
+            case 4:
+                databaseReference.child(user.getUid()).child("steps").child(day).setValue(stepInformation);
+                break;
+            //5 is thur
+            case 5:
+                databaseReference.child(user.getUid()).child("steps").child(day).setValue(stepInformation);
+                break;
+            //6 is fri
+            case 6:
+                databaseReference.child(user.getUid()).child("steps").child(day).setValue(stepInformation);
+                break;
+            //7 is Sat
+            case 7:
+                databaseReference.child(user.getUid()).child("steps").child(day).setValue(stepInformation);
+                break;
+        }
     }
 
     @Override
@@ -150,7 +203,7 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
                 count++; //When person walks increment the count
 
             }
-            //This shows steps for current session 
+            //This shows steps for current session
             steps = steps + count;
             //This data will be passed into the database when user clicks on steptracker activity
             stepCount = stepCount + count;

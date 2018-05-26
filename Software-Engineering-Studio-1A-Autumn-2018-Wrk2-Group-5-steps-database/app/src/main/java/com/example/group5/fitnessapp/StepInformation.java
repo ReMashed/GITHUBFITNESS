@@ -4,7 +4,9 @@ public class StepInformation {
     String step;
 
     public StepInformation(String step) {
+
         this.step = step;
+
     }
 
     public String getStep() {
