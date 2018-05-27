@@ -38,6 +38,7 @@ public class StepTracking extends AppCompatActivity{
 
     TextView steps;
     private int todaySteps = 0;
+    private int stepsToday = 0;
     private int monday = 0;
     private int tuesday = 0;
     private int wednesday = 0;
@@ -71,23 +72,68 @@ public class StepTracking extends AppCompatActivity{
         //Check for current date then figure out which axis to input it into.
         Date now = new Date();
         calendar.setTime(now);
-        int dayIndex = calendar.get(Calendar.DAY_OF_WEEK);
-        final String day = Integer.toString(dayIndex);
+        //int dayIndex = calendar.get(Calendar.DAY_OF_WEEK);
+        //final String day = Integer.toString(dayIndex);
 
         //Implement value listener which executes a method every time something changes in the database
-        databaseReference.child(mAuth.getCurrentUser().getUid()).child("steps").child(day).addValueEventListener(new ValueEventListener() {
+        databaseReference.child(mAuth.getCurrentUser().getUid()).child("steps").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 FirebaseUser current = mAuth.getCurrentUser();
                 //Since we added a valueEventListner for the specific user child,
                 //We can simply user the datasnapshot to get the value of variable stored under their id
-                String count = (String) dataSnapshot.child("step").getValue();
+                String count = (String) dataSnapshot.child("step").getValue(); //TODO this should be placeholder. then start working with actual days
+                Date now = new Date();
+                calendar.setTime(now);
+                int dayIndex = calendar.get(Calendar.DAY_OF_WEEK);
+                //int dayIndex = 3;
+                final String day = Integer.toString(dayIndex);
+
+                //Check which day it is, then use that index to choose which day we're going to be working on
+                switch (dayIndex) {
+                    case 1:
+                        //Its monday, or sunday for america time
+                        String sunday = (String) dataSnapshot.child("sunday").getValue();
+                        stepsToday = Integer.parseInt(sunday);
+                        break;
+                    case 2:
+                        String monday = (String) dataSnapshot.child("monday").getValue();
+                        stepsToday = Integer.parseInt(monday);
+                        break;
+                    case 3:
+                        String tuesday = (String) dataSnapshot.child("tuesday").getValue();
+                        stepsToday = Integer.parseInt(tuesday);
+                        break;
+                    //3 is tues
+                    case 4:
+                        String wednesday = (String) dataSnapshot.child("wednesday").getValue();
+                        stepsToday = Integer.parseInt(wednesday);
+                        break;
+                    //4 is wed
+                    case 5:
+                        String thursday = (String) dataSnapshot.child("thursday").getValue();
+                        stepsToday = Integer.parseInt(thursday);
+                        break;
+                    //5 is thur
+                    case 6:
+                        String friday = (String) dataSnapshot.child("friday").getValue();
+                        stepsToday = Integer.parseInt(friday);
+                        break;
+                    //6 is fri
+                    case 7:
+                        String saturday = (String) dataSnapshot.child("saturday").getValue();
+                        stepsToday = Integer.parseInt(saturday);
+                        break;
+                    //7 is Sat
+
+
+                }
                 if (count == null) {
                     //If variable doesn't yet exist
                     //However it should've of been created via sign up
                     //so this shouldn't be happening
                     System.out.println("null");
-                } else if (Integer.parseInt(count) >= 0){
+                } else if (stepsToday >= 0){
                     todaySteps = Integer.parseInt(count);
                     //Date labels
                     Date d1 = calendar.getTime();
@@ -104,14 +150,35 @@ public class StepTracking extends AppCompatActivity{
                     calendar.add(Calendar.DATE, 1);
                     Date d7 = calendar.getTime();
 
-                    int mon = calendar.MONDAY;
-                    int tues = calendar.TUESDAY;
-                    int wednes = calendar.WEDNESDAY;
-                    int thurs = calendar.THURSDAY;
-                    int fri = calendar.FRIDAY;
-                    int sat = Calendar.DAY_OF_WEEK;
-                    int sun = calendar.SUNDAY;
+                    int mon ;
+                    int tues;
+                    int wednes;
+                    int thurs;
+                    int fri ;
+                    int sat ;
+                    int sun ;
 
+                    //Its monday, or sunday for america time
+                    String sunday = (String) dataSnapshot.child("sunday").getValue();
+                    sun = Integer.parseInt(sunday);
+
+                    String monday = (String) dataSnapshot.child("monday").getValue();
+                    mon = Integer.parseInt(monday);
+
+                    String tuesday = (String) dataSnapshot.child("tuesday").getValue();
+                    tues = Integer.parseInt(tuesday);
+
+                    String wednesday = (String) dataSnapshot.child("wednesday").getValue();
+                    wednes = Integer.parseInt(wednesday);
+
+                    String thursday = (String) dataSnapshot.child("thursday").getValue();
+                    thurs = Integer.parseInt(thursday);
+
+                    String friday = (String) dataSnapshot.child("friday").getValue();
+                    fri = Integer.parseInt(friday);
+
+                    String saturday = (String) dataSnapshot.child("saturday").getValue();
+                    sat = Integer.parseInt(saturday);
 
                     Intent intent = getIntent();
                     int total = intent.getIntExtra("steps",0);
@@ -121,13 +188,13 @@ public class StepTracking extends AppCompatActivity{
 
                     //Need to grab data from the firebase database ;; for now we'll just grab the data from the main page
                     series = new BarGraphSeries<>(new DataPoint[] {
-                           /* new DataPoint(1, 0), //Mon
-                            new DataPoint(2, 0), //T
-                            new DataPoint(3,0 ), //W
-                            new DataPoint(4, 0), //Th
-                            new DataPoint(5, 0), //FR
-                            new DataPoint(6, 0), //Sat
-                            new DataPoint(7,0 ), //Sun but with calendar it's actually 1 and mon = 2 so SAT = 7*/
+                            new DataPoint(1, sun), //Mon or sun
+                            new DataPoint(2, mon), //T
+                            new DataPoint(3,tues ), //W
+                            new DataPoint(4, wednes), //Th
+                            new DataPoint(5, thurs), //FR
+                            new DataPoint(6, fri), //Sat
+                            new DataPoint(7,sat ), //Sun but with calendar it's actually 1 and mon = 2 so SAT = 7*/
                     });
                     graph.addSeries(series);
 
@@ -141,54 +208,44 @@ public class StepTracking extends AppCompatActivity{
 
 
 
-                    Date now = new Date();
+                   // Date now = new Date();
                     calendar.setTime(now);
-                    int dayIndex = calendar.get(Calendar.DAY_OF_WEEK);
+                    //int dayIndex = calendar.get(Calendar.DAY_OF_WEEK);
                     //int dayIndex = 1;
                     int index = 0;
                     //String day = Integer.toString(dayIndex);
 
-                    switch(dayIndex) {
+                   /* switch(dayIndex) {
                         //1 is sunday, but we want monday so set it to 7
                         case 1:
-                            index = 7;
-                            series.appendData(new DataPoint(dayIndex, todaySteps ), false, 10000);
+                            series.appendData(new DataPoint(dayIndex, stepsToday ), false, 10000);
                         break;
                         //2 is monday set to one
                         case 2:
-                            index = 1;
-
-                            series.appendData(new DataPoint(dayIndex, todaySteps ), false, 10000);
+                            series.appendData(new DataPoint(dayIndex, stepsToday ), false, 10000);
                         break;
                         //3 is tues
                         case 3:
-                            index = 2;
-
-                            series.appendData(new DataPoint(dayIndex, todaySteps ), false, 10000);
+                            series.appendData(new DataPoint(dayIndex, stepsToday ), false, 10000);
                         break;
                         //4 is wed
                         case 4:
-                            index = 3;
-
-                            series.appendData(new DataPoint(dayIndex, todaySteps ), false, 10000);
+                            series.appendData(new DataPoint(dayIndex, stepsToday ), false, 10000);
                         break;
                         //5 is thur
                         case 5:
-                            index = 4;
-
-                            series.appendData(new DataPoint(dayIndex, todaySteps ), false, 10000);
+                            series.appendData(new DataPoint(dayIndex, stepsToday ), false, 10000);
                         break;
                         //6 is fri
                         case 6:
-                            index = 5;
-                            series.appendData(new DataPoint(dayIndex, todaySteps ), false, 10000);
+                            series.appendData(new DataPoint(dayIndex, stepsToday ), false, 10000);
                         break;
                         //7 is Sat
                         case 7:
-                            index = 6;
-                            series.appendData(new DataPoint(dayIndex, todaySteps ), false, 10000);
+                            series.appendData(new DataPoint(dayIndex, stepsToday ), false, 10000);
                         break;
                     }
+                    */
 
                     graph.setTitle("This Weeks Step Count");
                     graph.getViewport().setScrollable(true); //enables scrolling and zooming

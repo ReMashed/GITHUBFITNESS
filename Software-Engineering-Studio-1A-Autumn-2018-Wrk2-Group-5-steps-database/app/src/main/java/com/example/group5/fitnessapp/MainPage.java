@@ -44,7 +44,7 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
 
-    Calendar calendar = Calendar.getInstance(Locale.FRANCE);
+    Calendar calendar = Calendar.getInstance(Locale.getDefault());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +139,7 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
     public void saveUserInformation(int s) {
         //convert the int to string for usability in firebase
         String step = Integer.toString(s);
+        //String calorieBurnt = Integer.toString(calorie);
         //Create object used to store that info into the database
         StepInformation stepInformation = new StepInformation(step);
         //Get current user
@@ -146,44 +147,46 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
 
         //Get day of week
         Date now = new Date();
-        //calendar.setTime(now);
+        calendar.setTime(now);
         int dayIndex = calendar.get(Calendar.DAY_OF_WEEK);
-        //int dayIndex = 7;
+        //int dayIndex = 3;
         String day = Integer.toString(dayIndex);
-
+        System.out.print(dayIndex);
         //add this information under that user's name
         //Also includes indices for each day
-        databaseReference.child(user.getUid()).child("steps").setValue(stepInformation);
+        //databaseReference.child(user.getUid()).child("steps").child(step).setValue(stepInformation);
         //TODO: Add a new child under steps representing each day
         switch(dayIndex) {
             //1 is sunday, but we want monday so set it to 7
             case 1:
-                databaseReference.child(user.getUid()).child("steps").child(day).setValue(stepInformation);
+                databaseReference.child(user.getUid()).child("steps").child("sunday").setValue(step);
+                break;
+            case 2:
+                databaseReference.child(user.getUid()).child("steps").child("monday").setValue(step);
                 break;
             //2 is monday set to one
-            case 2:
-                databaseReference.child(user.getUid()).child("steps").child(day).setValue(stepInformation);
+            case 3:
+                databaseReference.child(user.getUid()).child("steps").child("tuesday").setValue(step);
                 break;
             //3 is tues
-            case 3:
-                databaseReference.child(user.getUid()).child("steps").child(day).setValue(stepInformation);
+            case 4:
+                databaseReference.child(user.getUid()).child("steps").child("wednesday").setValue(step);
                 break;
             //4 is wed
-            case 4:
-                databaseReference.child(user.getUid()).child("steps").child(day).setValue(stepInformation);
+            case 5:
+                databaseReference.child(user.getUid()).child("steps").child("thursday").setValue(step);
                 break;
             //5 is thur
-            case 5:
-                databaseReference.child(user.getUid()).child("steps").child(day).setValue(stepInformation);
+            case 6:
+                databaseReference.child(user.getUid()).child("steps").child("friday").setValue(step);
                 break;
             //6 is fri
-            case 6:
-                databaseReference.child(user.getUid()).child("steps").child(day).setValue(stepInformation);
+            case 7:
+                databaseReference.child(user.getUid()).child("steps").child("saturday").setValue(step);
                 break;
             //7 is Sat
-            case 7:
-                databaseReference.child(user.getUid()).child("steps").child(day).setValue(stepInformation);
-                break;
+
+
         }
     }
 
