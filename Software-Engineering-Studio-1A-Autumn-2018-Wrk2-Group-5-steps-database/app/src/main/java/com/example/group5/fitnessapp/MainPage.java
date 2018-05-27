@@ -39,6 +39,7 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
     private String testResult;
     private int stepCount = 0;
     private double calorie = 0;
+    private double currentCalorie = 0;
 
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
@@ -91,6 +92,8 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
                 //Since we added a valueEventListner for the specific user child,
                 //We can simply user the datasnapshot to get the value of variable stored under their id
                 String count = (String) dataSnapshot.child("step").getValue(); //This current shows if user created a account i guess meaning step initialise to 0 upon creation
+                String calorieToday = (String) dataSnapshot.child("calories").getValue();
+                currentCalorie = Double.parseDouble(calorieToday);
 
                 if (count == null) {
                     //If variable doesn't yet exist
@@ -103,7 +106,7 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
                     Date now = new Date();
                     calendar.setTime(now);
                     int dayIndex = Calendar.DAY_OF_WEEK;
-                    switch (dayIndex) {
+                    /*switch (dayIndex) {
                         case 1:
                             //Its monday, or sunday for america time
                             String sunday = (String) dataSnapshot.child("sunday").getValue();
@@ -145,7 +148,7 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
                             stepCount= Integer.parseInt(saturday);
                             break;
                         //7 is Sat
-                    }
+                    }*/
                 }
             }
             @Override
@@ -156,9 +159,10 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
     }
 
 
+
     public void onStepTrack(View view){
         Intent i = new Intent(MainPage.this, StepTracking.class);
-        saveUserInformation(stepCount);
+        saveUserInformation(stepCount, currentCalorie);
         //i.putExtra("steps", steps);
         startActivity(i); //launches step tracker
     }
@@ -199,8 +203,10 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)  //Checks if accelerometer is providing data
         {
             int count = 0; //count for when person walks/jogs/runs
+            double cal = 0;
             if (sensorData >= 12 && sensorData <= 17) {
-                calorie = calorie + (0.05); //Estimate for calories burnt per step, so 1 calories for every 20 steps. so 0.05 for 1 step.
+                cal = cal + (0.05); //Estimate for calories burnt per step, so 1 calories for every 20 steps. so 0.05 for 1 step.
+                calorie = calorie + (0.05);
                 count++; //When person walks increment the count
 
             }
@@ -210,17 +216,20 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
             //This data will be passed into the database when user clicks on steptracker activity
             stepCount = stepCount + count;
             calorie = Math.floor(calorie * 100) / 100; //truncates the decimal places to two.
+            currentCalorie = currentCalorie + cal;
+            currentCalorie = Math.floor(currentCalorie * 100) /100;
             sensorText.setText("Steps currently taken: " + steps); //print out total steps
             calorieText.setText("Calories currently burned: "+ calorie + " kcal");
         }
     }
 
-    public void saveUserInformation(int s) {
+    public void saveUserInformation(int s, double c) {
         //convert the int to string for usability in firebase
         String step = Integer.toString(s);
+        String calorie  = Double.toString(c);
         //String calorieBurnt = Integer.toString(calorie);
         //Create object used to store that info into the database
-        StepInformation stepInformation = new StepInformation(step);
+        StepInformation stepInformation = new StepInformation(step, calorie);
         //Get current user
         FirebaseUser user = mAuth.getCurrentUser();
 
@@ -239,29 +248,36 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
             //1 is sunday, but we want monday so set it to 7
             case 1:
                 databaseReference.child(user.getUid()).child("steps").child("sunday").setValue(step);
+                databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
                 break;
             case 2:
                 databaseReference.child(user.getUid()).child("steps").child("monday").setValue(step);
+                databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
                 break;
             //2 is monday set to one
             case 3:
                 databaseReference.child(user.getUid()).child("steps").child("tuesday").setValue(step);
+                databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
                 break;
             //3 is tues
             case 4:
                 databaseReference.child(user.getUid()).child("steps").child("wednesday").setValue(step);
+                databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
                 break;
             //4 is wed
             case 5:
                 databaseReference.child(user.getUid()).child("steps").child("thursday").setValue(step);
+                databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
                 break;
             //5 is thur
             case 6:
                 databaseReference.child(user.getUid()).child("steps").child("friday").setValue(step);
+                databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
                 break;
             //6 is fri
             case 7:
                 databaseReference.child(user.getUid()).child("steps").child("saturday").setValue(step);
+                databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
                 break;
             //7 is Sat
         }

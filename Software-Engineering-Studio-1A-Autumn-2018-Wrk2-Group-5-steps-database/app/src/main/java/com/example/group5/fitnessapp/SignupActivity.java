@@ -98,7 +98,7 @@ public class SignupActivity extends AppCompatActivity {
                     //profile activity here
                     finish();
                     FirebaseUser user = mAuth.getCurrentUser();
-                    StepInformation step = new StepInformation("0");
+                    StepInformation step = new StepInformation("0", "0");
                     mDatabase.child(user.getUid()).child("steps").setValue(step);
                     startActivity(new Intent(getApplicationContext(), MainPage.class));
 

@@ -38,6 +38,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/transparent"
+            android:onClick="onMain"
             android:text="Main"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large.Inverse"
             android:textColor="@android:color/holo_blue_light"
@@ -53,7 +54,7 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/ic_camera" />
+        app:srcCompat="@android:drawable/ic_input_add" />
 
     <com.jjoe64.graphview.GraphView
         android:id="@+id/graph"
@@ -71,11 +72,12 @@
         android:id="@+id/todayStep"
         android:layout_width="260dp"
         android:layout_height="23dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="4dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:text="@string/today_step"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintBottom_toTopOf="@+id/burntToday"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
@@ -89,6 +91,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:text="@string/today_calorie"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintBottom_toTopOf="@+id/graph"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/todayStep" />

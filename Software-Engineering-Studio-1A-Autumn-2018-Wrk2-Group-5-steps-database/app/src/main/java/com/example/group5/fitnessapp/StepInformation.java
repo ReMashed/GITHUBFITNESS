@@ -11,10 +11,10 @@ public class StepInformation {
     public String saturday ;
     public String sunday ;
 
-    public StepInformation(String step) {
+    public StepInformation(String step, String calories) {
 
         this.step = step;
-        calories = "0"; //TODO pass calories into the constructor
+        this.calories = calories; //TODO pass calories into the constructor
         monday = step;
         tuesday=  step ;
         wednesday= step;
@@ -23,6 +23,70 @@ public class StepInformation {
         saturday = step;
         sunday = step;
 
+    }
+
+    public String getCalories() {
+        return calories;
+    }
+
+    public void setCalories(String calories) {
+        this.calories = calories;
+    }
+
+    public String getMonday() {
+        return monday;
+    }
+
+    public void setMonday(String monday) {
+        this.monday = monday;
+    }
+
+    public String getTuesday() {
+        return tuesday;
+    }
+
+    public void setTuesday(String tuesday) {
+        this.tuesday = tuesday;
+    }
+
+    public String getWednesday() {
+        return wednesday;
+    }
+
+    public void setWednesday(String wednesday) {
+        this.wednesday = wednesday;
+    }
+
+    public String getThursday() {
+        return thursday;
+    }
+
+    public void setThursday(String thursday) {
+        this.thursday = thursday;
+    }
+
+    public String getFriday() {
+        return friday;
+    }
+
+    public void setFriday(String friday) {
+        this.friday = friday;
+    }
+
+    public String getSaturday() {
+        return saturday;
+    }
+
+    public void setSaturday(String saturday) {
+        this.saturday = saturday;
+    }
+
+    public String getSunday() {
+        return sunday;
+    }
+
+    public void setSunday(String sunday) {
+        this.sunday = sunday;
     }
 
     public String getStep() {

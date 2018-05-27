@@ -36,7 +36,7 @@ public class StepTracking extends AppCompatActivity{
     //Calendar calendar = Calendar.getInstance(new Locale("en", "AU"));
     Calendar calendar = Calendar.getInstance(Locale.getDefault());
 
-    TextView steps;
+    TextView steps, calories;
     private int todaySteps = 0;
     private int stepsToday = 0;
     private int monday = 0;
@@ -56,10 +56,15 @@ public class StepTracking extends AppCompatActivity{
         setContentView(R.layout.activity_step_tracking);
 
         steps = (TextView) findViewById(R.id.todayStep);
+        calories = (TextView) findViewById(R.id.burntToday);
 
         mAuth = FirebaseAuth.getInstance();
         //Get reference to database
         databaseReference = FirebaseDatabase.getInstance().getReference();
+    }
+
+    public void onMain(View view) {
+        finish();
     }
 
     @Override
@@ -122,6 +127,9 @@ public class StepTracking extends AppCompatActivity{
                     int sat ;
                     int sun ;
 
+                    String caloriess = (String) dataSnapshot.child("calories").getValue();
+                    calories.setText("Calories Burnt Today: " + Double.parseDouble(caloriess));
+
                     //Check which day it is, then use that index to choose which day we're going to be working on
                     switch (dayIndex) {
                         case 1:
@@ -129,6 +137,8 @@ public class StepTracking extends AppCompatActivity{
                             String sunday = (String) dataSnapshot.child("sunday").getValue();
                             stepsToday = Integer.parseInt(sunday);
                             steps.setText("Steps taken today: " + stepsToday);
+
+
                             break;
                         case 2:
                             String monday = (String) dataSnapshot.child("monday").getValue();
