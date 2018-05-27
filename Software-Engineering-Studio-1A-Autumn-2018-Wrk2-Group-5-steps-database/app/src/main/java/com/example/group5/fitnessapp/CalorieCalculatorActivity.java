@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -58,42 +59,52 @@ public class CalorieCalculatorActivity extends AppCompatActivity {
             startActivity(new Intent (this, LoginActivity.class));
         }
         //Implement value listener which executes a method every time something changes in the database
-        mDatabase.child(mAuth.getCurrentUser().getUid()).child("user").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                FirebaseUser current = mAuth.getCurrentUser();
-                //Since we added a valueEventListner for the specific user child,
-                //We can simply user the datasnapshot to get the value of variable stored under their id
-                String weight = (String) dataSnapshot.child("weight").getValue();
-                weightVar = Double.parseDouble(weight);
-                String height = (String) dataSnapshot.child("height").getValue();
-                heightVar = Double.parseDouble(height);
-                String age = (String) dataSnapshot.child("age").getValue();
-                ageVar = Double.parseDouble(age);
-                String gender = (String) dataSnapshot.child("gender").getValue();
-                //genderVar = gender;
 
-                String male = new String("male");
-                String male2 = new String("Male");
-                String female = new String("female");
-                String female2 = new String("Female");
 
-                if (gender != null || gender.equals(male) || gender.equals(male2)) { //male
-                    result = 10 * (weightVar) + 6.25 * (heightVar) - 5 * ageVar + 5;
-                    dailyIntake.setText("Recommended Daily Calorie Intake: " + result + "kcal");
+            mDatabase.child(mAuth.getCurrentUser().getUid()).child("user").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    FirebaseUser current = mAuth.getCurrentUser();
+                    //Since we added a valueEventListner for the specific user child,
+                    //We can simply user the datasnapshot to get the value of variable stored under their id
+                    String weight = (String) dataSnapshot.child("weight").getValue();
+                    if (weight == null) {
+                        Toast.makeText(CalorieCalculatorActivity.this , "Please update your profile to see your recommended caloric intake", Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        weightVar = Double.parseDouble(weight);
+                        String height = (String) dataSnapshot.child("height").getValue();
+                        heightVar = Double.parseDouble(height);
+                        String age = (String) dataSnapshot.child("age").getValue();
+                        ageVar = Double.parseDouble(age);
+                        String gender = (String) dataSnapshot.child("gender").getValue();
+                        //genderVar = gender;
 
-                } else if (gender != null || gender.equals(female2) || gender.equals(female)) { //female
-                    result = 10 * (weightVar) + 6.25 * (heightVar) - 5 * ageVar - 161;
-                    dailyIntake.setText("Recommended Daily Calorie Intake: " + result + "kcal");
+                        String male = new String("male");
+                        String male2 = new String("Male");
+                        String female = new String("female");
+                        String female2 = new String("Female");
+
+                        if (gender != null || gender.equals(male) || gender.equals(male2)) { //male
+                            result = (10 * (weightVar) + 6.25 * (heightVar) - 5 * ageVar + 5);
+                            dailyIntake.setText("Recommended Daily Calorie Intake: " + result + "kcal");
+
+                        } else if (gender != null || gender.equals(female2) || gender.equals(female)) { //female
+                            result = (10 * (weightVar) + 6.25 * (heightVar) - 5 * ageVar - 161);
+                            dailyIntake.setText("Recommended Daily Calorie Intake: " + result + "kcal");
+                        }
+                        //String name = (String) dataSnapshot.child("name").getValue();
+                    }
+
                 }
-                //String name = (String) dataSnapshot.child("name").getValue();
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+
+
 
     }
 

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -63,8 +64,8 @@ public class StepTracking extends AppCompatActivity{
         databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
-    public void onMain(View view) {
-        finish();
+    public void onHelp(View view) {
+        Toast.makeText(this, "Days are represented by numbers starting with Sunday at 1", Toast.LENGTH_LONG).show();
     }
 
     @Override
