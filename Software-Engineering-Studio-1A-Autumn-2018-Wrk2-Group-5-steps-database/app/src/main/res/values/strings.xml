@@ -3,7 +3,7 @@
     <string name="title_activity_login">Login</string>
 
     <!-- Main page strings, note some activities may use same strings-->
-    <string name="action_steptracker">Step Tracker</string>
+    <string name="action_steptracker">Progress Page</string>
     <string name="calculator">Calorie Calculator</string>
     <string name="action_setting">Setting</string>
     <string name="action_details">My Details</string>

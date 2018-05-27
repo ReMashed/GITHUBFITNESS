@@ -95,52 +95,74 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
                 String calorieToday = (String) dataSnapshot.child("calories").getValue();
                 currentCalorie = Double.parseDouble(calorieToday);
 
-                if (count == null) {
+                /*/if (count == null) {
                     //If variable doesn't yet exist
                     //However it should've of been created via sign up
                     //so this shouldn't be happening
                     System.out.println("null");
-                } else if (Integer.parseInt(count) >= 0){
+                } else if (Integer.parseInt(count) >= 0){ */
                     //stepCount = Integer.parseInt(count);
                     //testResult = "not null";
                     Date now = new Date();
                     calendar.setTime(now);
-                    int dayIndex = Calendar.DAY_OF_WEEK;
-                    /*switch (dayIndex) {
+                    int dayIndex = calendar.get(Calendar.DAY_OF_WEEK);
+
+                if (dayIndex == 1) {
+                    //1 is sunday, but we want monday so set it to 7
+                    String sunday = (String) dataSnapshot.child("sunday").getValue();
+                    stepCount = Integer.parseInt(sunday);
+                } else if (dayIndex == 2) {
+                    String monday = (String) dataSnapshot.child("monday").getValue();
+                    stepCount = Integer.parseInt(monday);
+                } else if (dayIndex == 3) {
+                    String tuesday = (String) dataSnapshot.child("tuesday").getValue();
+                    stepCount = Integer.parseInt(tuesday);
+
+                } else if (dayIndex == 4) {
+                    String wednesday = (String) dataSnapshot.child("wednesday").getValue();
+                    stepCount = Integer.parseInt(wednesday);
+                } else if (dayIndex == 5) {
+                    String thursday = (String) dataSnapshot.child("thursday").getValue();
+                    stepCount = Integer.parseInt(thursday);
+                } else if (dayIndex == 6) {
+                    String friday = (String) dataSnapshot.child("friday").getValue();
+                    stepCount = Integer.parseInt(friday);
+
+                }else if (dayIndex == 7) {
+                    String saturday = (String) dataSnapshot.child("saturday").getValue();
+                    stepCount= Integer.parseInt(saturday);
+
+                }
+                    /*
+                    switch (dayIndex) {
                         case 1:
                             //Its monday, or sunday for america time
                             String sunday = (String) dataSnapshot.child("sunday").getValue();
                              stepCount = Integer.parseInt(sunday);
                             //sunday = Integer.toString(stepCount);//0
-
                             break;
                         case 2:
                             String monday = (String) dataSnapshot.child("monday").getValue();
                             stepCount = Integer.parseInt(monday);
-
                             break;
                         case 3:
                             String tuesday = (String) dataSnapshot.child("tuesday").getValue();
                             stepCount = Integer.parseInt(tuesday);
-
                             break;
                         //3 is tues
                         case 4:
                             String wednesday = (String) dataSnapshot.child("wednesday").getValue();
                             stepCount = Integer.parseInt(wednesday);
-
                             break;
                         //4 is wed
                         case 5:
                             String thursday = (String) dataSnapshot.child("thursday").getValue();
                             stepCount = Integer.parseInt(thursday);
-
                             break;
                         //5 is thur
                         case 6:
                             String friday = (String) dataSnapshot.child("friday").getValue();
                             stepCount = Integer.parseInt(friday);
-
                             break;
                         //6 is fri
                         case 7:
@@ -148,9 +170,9 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
                             stepCount= Integer.parseInt(saturday);
                             break;
                         //7 is Sat
-                    }*/
+                    } */
                 }
-            }
+            // }
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
@@ -229,7 +251,7 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
         String calorie  = Double.toString(c);
         //String calorieBurnt = Integer.toString(calorie);
         //Create object used to store that info into the database
-        StepInformation stepInformation = new StepInformation(step, calorie);
+        //StepInformation stepInformation = new StepInformation(step, calorie);
         //Get current user
         FirebaseUser user = mAuth.getCurrentUser();
 
@@ -244,42 +266,31 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
         //Also includes indices for each day
         //databaseReference.child(user.getUid()).child("steps").child(step).setValue(stepInformation);
         //TODO: Add a new child under steps representing each day
-        switch(dayIndex) {
+        if (dayIndex == 1) {
             //1 is sunday, but we want monday so set it to 7
-            case 1:
-                databaseReference.child(user.getUid()).child("steps").child("sunday").setValue(step);
-                databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
-                break;
-            case 2:
-                databaseReference.child(user.getUid()).child("steps").child("monday").setValue(step);
-                databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
-                break;
-            //2 is monday set to one
-            case 3:
-                databaseReference.child(user.getUid()).child("steps").child("tuesday").setValue(step);
-                databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
-                break;
-            //3 is tues
-            case 4:
-                databaseReference.child(user.getUid()).child("steps").child("wednesday").setValue(step);
-                databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
-                break;
-            //4 is wed
-            case 5:
-                databaseReference.child(user.getUid()).child("steps").child("thursday").setValue(step);
-                databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
-                break;
-            //5 is thur
-            case 6:
-                databaseReference.child(user.getUid()).child("steps").child("friday").setValue(step);
-                databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
-                break;
-            //6 is fri
-            case 7:
-                databaseReference.child(user.getUid()).child("steps").child("saturday").setValue(step);
-                databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
-                break;
-            //7 is Sat
+            databaseReference.child(user.getUid()).child("steps").child("sunday").setValue(step);
+            databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
+        } else if (dayIndex == 2) {
+            databaseReference.child(user.getUid()).child("steps").child("monday").setValue(step);
+            databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
+        } else if (dayIndex == 3) {
+            databaseReference.child(user.getUid()).child("steps").child("tuesday").setValue(step);
+            databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
+
+        } else if (dayIndex == 4) {
+            databaseReference.child(user.getUid()).child("steps").child("wednesday").setValue(step);
+            databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
+        } else if (dayIndex == 5) {
+            databaseReference.child(user.getUid()).child("steps").child("thursday").setValue(step);
+            databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
+        } else if (dayIndex == 6) {
+            databaseReference.child(user.getUid()).child("steps").child("friday").setValue(step);
+            databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
+
+        }else if (dayIndex == 7) {
+            databaseReference.child(user.getUid()).child("steps").child("saturday").setValue(step);
+            databaseReference.child(user.getUid()).child("steps").child("calories").setValue(calorie);
+
         }
     }
 

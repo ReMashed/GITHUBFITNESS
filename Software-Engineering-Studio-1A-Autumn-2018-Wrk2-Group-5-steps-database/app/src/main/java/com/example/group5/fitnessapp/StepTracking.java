@@ -225,9 +225,7 @@ public class StepTracking extends AppCompatActivity{
                             return Color.rgb((int) data.getX()*255/4, (int) Math.abs(data.getY()*255/6), 100);
                         }
                     });
-
-
-
+                    
                    // Date now = new Date();
                     calendar.setTime(now);
                     //int dayIndex = calendar.get(Calendar.DAY_OF_WEEK);
@@ -281,7 +279,7 @@ public class StepTracking extends AppCompatActivity{
                     //graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
                     graph.getGridLabelRenderer().setNumHorizontalLabels(7); // only 4 because of the space
                     graph.getGridLabelRenderer().setHumanRounding(true);
-                    graph.getGridLabelRenderer().setPadding(64); //padding for axis labels to fit
+                    graph.getGridLabelRenderer().setPadding(32); //padding for axis labels to fit
                     series.setSpacing(2);
                     series.setDataWidth(1);
                 }
