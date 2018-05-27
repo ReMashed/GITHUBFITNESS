@@ -1,8 +1,12 @@
 package com.example.group5.fitnessapp;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +29,9 @@ public class CalorieCalculatorActivity extends AppCompatActivity {
     private String genderVar;
     private double result;//
 
+    EditText foodEditText, caloriesEditText;
+    Button addFoodButton;
+    TextView currentIntake;
 
 
     @Override
@@ -33,7 +40,10 @@ public class CalorieCalculatorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_calorie_calculator);
 
         dailyIntake = (TextView) findViewById(R.id.textDailyIntake);
-
+        foodEditText = (EditText) findViewById(R.id.foodEditText);
+        caloriesEditText = (EditText) findViewById(R.id.caloriesEditText);
+        addFoodButton = (Button) findViewById(R.id.addFoodButton);
+        currentIntake = (TextView) findViewById(R.id.currentIntake);
         mAuth = FirebaseAuth.getInstance();
 
         //Check if the user is logged in, may not be necessary for this activity; leaving it for now
@@ -98,13 +108,30 @@ public class CalorieCalculatorActivity extends AppCompatActivity {
 
                 }
 
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
                 }
             });
 
+            DatabaseReference foodRef = mDatabase.child(mAuth.getCurrentUser().getUid()).child("Food intake");
+            foodRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    double intake = 0.0;
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        String food = ds.getKey();
+                        intake += Double.parseDouble(ds.getValue().toString());
+                    }
+                    currentIntake.setText("Current Intake: " + intake + "kcal");
+                }
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
 
     }
 
@@ -113,4 +140,33 @@ public class CalorieCalculatorActivity extends AppCompatActivity {
         super.onResume();
 
     }
+
+    public void openWebDB(View view) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https:ndb.nal.usda.gov/ndb/search/list"));
+        startActivity(browserIntent);
+    }
+
+    public void addFood(View view) {
+        mDatabase.child(mAuth.getCurrentUser().getUid()).child("Food intake").child(foodEditText.getText().toString()).setValue(caloriesEditText.getText().toString());
+    }
+
+    public void clearFoods(View view) {
+        DatabaseReference foodRef = mDatabase.child(mAuth.getCurrentUser().getUid()).child("Food intake");
+        foodRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String food = ds.getKey();
+                    ds.getRef().removeValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        Toast.makeText(this, "Cleared food entries", Toast.LENGTH_SHORT).show();
+    }
+
 }
