@@ -39,7 +39,6 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
     private String testResult;
     private int stepCount = 0;
     private double calorie = 0;
-    private int dayIndex;
 
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
@@ -66,6 +65,12 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
     protected void onStart() {
         super.onStart();
 
+    }
+
+    protected void onResume(){ //Register sensors as soon as activity is opened
+        super.onResume();
+        sensManager.registerListener(this, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
         //If the user is not logged in, redirect them to the login page
         if (mAuth.getCurrentUser() == null) {
             finish();
@@ -85,7 +90,7 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
                 FirebaseUser current = mAuth.getCurrentUser();
                 //Since we added a valueEventListner for the specific user child,
                 //We can simply user the datasnapshot to get the value of variable stored under their id
-                String count = (String) dataSnapshot.child("step").getValue();
+                String count = (String) dataSnapshot.child("step").getValue(); //This current shows if user created a account i guess meaning step initialise to 0 upon creation
 
                 if (count == null) {
                     //If variable doesn't yet exist
@@ -93,8 +98,54 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
                     //so this shouldn't be happening
                     System.out.println("null");
                 } else if (Integer.parseInt(count) >= 0){
-                    stepCount = Integer.parseInt(count);
+                    //stepCount = Integer.parseInt(count);
                     //testResult = "not null";
+                    Date now = new Date();
+                    calendar.setTime(now);
+                    int dayIndex = Calendar.DAY_OF_WEEK;
+                    switch (dayIndex) {
+                        case 1:
+                            //Its monday, or sunday for america time
+                            String sunday = (String) dataSnapshot.child("sunday").getValue();
+                             stepCount = Integer.parseInt(sunday);
+                            //sunday = Integer.toString(stepCount);//0
+
+                            break;
+                        case 2:
+                            String monday = (String) dataSnapshot.child("monday").getValue();
+                            stepCount = Integer.parseInt(monday);
+
+                            break;
+                        case 3:
+                            String tuesday = (String) dataSnapshot.child("tuesday").getValue();
+                            stepCount = Integer.parseInt(tuesday);
+
+                            break;
+                        //3 is tues
+                        case 4:
+                            String wednesday = (String) dataSnapshot.child("wednesday").getValue();
+                            stepCount = Integer.parseInt(wednesday);
+
+                            break;
+                        //4 is wed
+                        case 5:
+                            String thursday = (String) dataSnapshot.child("thursday").getValue();
+                            stepCount = Integer.parseInt(thursday);
+
+                            break;
+                        //5 is thur
+                        case 6:
+                            String friday = (String) dataSnapshot.child("friday").getValue();
+                            stepCount = Integer.parseInt(friday);
+
+                            break;
+                        //6 is fri
+                        case 7:
+                            String saturday = (String) dataSnapshot.child("saturday").getValue();
+                            stepCount= Integer.parseInt(saturday);
+                            break;
+                        //7 is Sat
+                    }
                 }
             }
             @Override
@@ -136,6 +187,34 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
         startActivity(new Intent(this, LoginActivity.class));
     }
 
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        double x = (double) event.values[0]; //Convert acceleration values to doubles
+        double y = (double) event.values[1];
+        double z = (double) event.values[2];
+        double sum = Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2); //Executing that formula
+        double sensorData = sqrt(sum);
+
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)  //Checks if accelerometer is providing data
+        {
+            int count = 0; //count for when person walks/jogs/runs
+            if (sensorData >= 12 && sensorData <= 17) {
+                calorie = calorie + (0.05); //Estimate for calories burnt per step, so 1 calories for every 20 steps. so 0.05 for 1 step.
+                count++; //When person walks increment the count
+
+            }
+            //This shows steps for current session
+            steps = steps + count;
+
+            //This data will be passed into the database when user clicks on steptracker activity
+            stepCount = stepCount + count;
+            calorie = Math.floor(calorie * 100) / 100; //truncates the decimal places to two.
+            sensorText.setText("Steps currently taken: " + steps); //print out total steps
+            calorieText.setText("Calories currently burned: "+ calorie + " kcal");
+        }
+    }
+
     public void saveUserInformation(int s) {
         //convert the int to string for usability in firebase
         String step = Integer.toString(s);
@@ -151,7 +230,7 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
         int dayIndex = calendar.get(Calendar.DAY_OF_WEEK);
         //int dayIndex = 3;
         String day = Integer.toString(dayIndex);
-        System.out.print(dayIndex);
+
         //add this information under that user's name
         //Also includes indices for each day
         //databaseReference.child(user.getUid()).child("steps").child(step).setValue(stepInformation);
@@ -185,46 +264,15 @@ public class MainPage extends AppCompatActivity implements SensorEventListener{
                 databaseReference.child(user.getUid()).child("steps").child("saturday").setValue(step);
                 break;
             //7 is Sat
-
-
         }
     }
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        double x = (double) event.values[0]; //Convert acceleration values to doubles
-        double y = (double) event.values[1];
-        double z = (double) event.values[2];
-        double sum = Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2); //Executing that formula
-        double sensorData = sqrt(sum);
-
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)  //Checks if accelerometer is providing data
-        {
-            int count = 0; //count for when person walks/jogs/runs
-            if (sensorData >= 12 && sensorData <= 17) {
-                calorie = calorie + (0.05); //Estimate for calories burnt per step, so 1 calories for every 20 steps. so 0.05 for 1 step.
-                count++; //When person walks increment the count
-
-            }
-            //This shows steps for current session
-            steps = steps + count;
-            //This data will be passed into the database when user clicks on steptracker activity
-            stepCount = stepCount + count;
-            calorie = Math.floor(calorie * 100) / 100; //truncates the decimal places to two.
-            sensorText.setText("Steps in Db: " + steps); //print out total steps
-            calorieText.setText("You have burned: "+ calorie + " kcal");
-        }
-    }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
 
-    protected void onResume(){ //Register sensors as soon as activity is opened
-        super.onResume();
-        sensManager.registerListener(this, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
-    }
 
     protected void onStop() { //When Activity is no longer visible, stop counting; take this out if you want it to count in the background
         super.onStop();

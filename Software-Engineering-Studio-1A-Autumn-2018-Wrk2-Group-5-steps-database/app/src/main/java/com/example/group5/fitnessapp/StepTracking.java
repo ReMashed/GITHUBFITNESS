@@ -55,6 +55,8 @@ public class StepTracking extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_tracking);
 
+        steps = (TextView) findViewById(R.id.todayStep);
+
         mAuth = FirebaseAuth.getInstance();
         //Get reference to database
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -89,45 +91,7 @@ public class StepTracking extends AppCompatActivity{
                 //int dayIndex = 3;
                 final String day = Integer.toString(dayIndex);
 
-                //Check which day it is, then use that index to choose which day we're going to be working on
-                switch (dayIndex) {
-                    case 1:
-                        //Its monday, or sunday for america time
-                        String sunday = (String) dataSnapshot.child("sunday").getValue();
-                        stepsToday = Integer.parseInt(sunday);
-                        break;
-                    case 2:
-                        String monday = (String) dataSnapshot.child("monday").getValue();
-                        stepsToday = Integer.parseInt(monday);
-                        break;
-                    case 3:
-                        String tuesday = (String) dataSnapshot.child("tuesday").getValue();
-                        stepsToday = Integer.parseInt(tuesday);
-                        break;
-                    //3 is tues
-                    case 4:
-                        String wednesday = (String) dataSnapshot.child("wednesday").getValue();
-                        stepsToday = Integer.parseInt(wednesday);
-                        break;
-                    //4 is wed
-                    case 5:
-                        String thursday = (String) dataSnapshot.child("thursday").getValue();
-                        stepsToday = Integer.parseInt(thursday);
-                        break;
-                    //5 is thur
-                    case 6:
-                        String friday = (String) dataSnapshot.child("friday").getValue();
-                        stepsToday = Integer.parseInt(friday);
-                        break;
-                    //6 is fri
-                    case 7:
-                        String saturday = (String) dataSnapshot.child("saturday").getValue();
-                        stepsToday = Integer.parseInt(saturday);
-                        break;
-                    //7 is Sat
 
-
-                }
                 if (count == null) {
                     //If variable doesn't yet exist
                     //However it should've of been created via sign up
@@ -158,6 +122,51 @@ public class StepTracking extends AppCompatActivity{
                     int sat ;
                     int sun ;
 
+                    //Check which day it is, then use that index to choose which day we're going to be working on
+                    switch (dayIndex) {
+                        case 1:
+                            //Its monday, or sunday for america time
+                            String sunday = (String) dataSnapshot.child("sunday").getValue();
+                            stepsToday = Integer.parseInt(sunday);
+                            steps.setText("Steps taken today: " + stepsToday);
+                            break;
+                        case 2:
+                            String monday = (String) dataSnapshot.child("monday").getValue();
+                            stepsToday = Integer.parseInt(monday);
+                            steps.setText("Steps taken today: " + stepsToday);
+                            break;
+                        case 3:
+                            String tuesday = (String) dataSnapshot.child("tuesday").getValue();
+                            stepsToday = Integer.parseInt(tuesday);
+                            steps.setText("Steps taken today: " + stepsToday);
+                            break;
+                        //3 is tues
+                        case 4:
+                            String wednesday = (String) dataSnapshot.child("wednesday").getValue();
+                            stepsToday = Integer.parseInt(wednesday);
+                            steps.setText("Steps taken today: " + stepsToday);
+                            break;
+                        //4 is wed
+                        case 5:
+                            String thursday = (String) dataSnapshot.child("thursday").getValue();
+                            stepsToday = Integer.parseInt(thursday);
+                            steps.setText("Steps taken today: " + stepsToday);;
+                            break;
+                        //5 is thur
+                        case 6:
+                            String friday = (String) dataSnapshot.child("friday").getValue();
+                            stepsToday = Integer.parseInt(friday);
+                            steps.setText("Steps taken today: " + stepsToday);
+                            break;
+                        //6 is fri
+                        case 7:
+                            String saturday = (String) dataSnapshot.child("saturday").getValue();
+                            stepsToday = Integer.parseInt(saturday);
+                            steps.setText("Steps taken today: " + stepsToday);
+                            break;
+                        //7 is Sat
+                    }
+
                     //Its monday, or sunday for america time
                     String sunday = (String) dataSnapshot.child("sunday").getValue();
                     sun = Integer.parseInt(sunday);
@@ -182,8 +191,8 @@ public class StepTracking extends AppCompatActivity{
 
                     Intent intent = getIntent();
                     int total = intent.getIntExtra("steps",0);
-                    steps = (TextView)  findViewById(R.id.todayStep);
-                    steps.setText("Steps Taken Today: " + todaySteps);
+                    //steps = (TextView)  findViewById(R.id.todayStep);
+                    //steps.setText("Steps Taken Today: " + todaySteps);
                     graph = (GraphView) findViewById(R.id.graph);
 
                     //Need to grab data from the firebase database ;; for now we'll just grab the data from the main page
